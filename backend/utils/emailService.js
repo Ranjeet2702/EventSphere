@@ -42,4 +42,28 @@ const sendRegistrationConfirmationEmail = async (to, event) => {
     }
 };
 
-module.exports = { sendPasswordResetEmail, sendRegistrationConfirmationEmail };
+// --- NEW FEATURE: Function to send cancellation emails ---
+const sendCancellationNotificationEmail = async (to, studentName, eventTitle, reason) => {
+    const mailOptions = {
+        from: `"EventSphere Alerts" <${process.env.EMAIL_USER}>`,
+        to: to,
+        subject: `❗ Event Cancelled: ${eventTitle}`,
+        html: `
+            <p>Hi ${studentName},</p>
+            <p>We are writing to inform you that the event, <strong>${eventTitle}</strong>, has been cancelled.</p>
+            <p><strong>Reason provided by the administrator:</strong> ${reason}</p>
+            <p>If this was a paid event, a refund has been processed and should reflect in your account shortly.</p>
+            <p>We apologize for any inconvenience this may cause.</p>
+            <p>Sincerely,<br>The EventSphere Team</p>
+        `,
+    };
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        console.log(`Cancellation email sent to ${to}. Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+    } catch (error) {
+        console.error(`Error sending cancellation email to ${to}:`, error);
+    }
+};
+// --- END OF NEW FEATURE ---
+
+module.exports = { sendPasswordResetEmail, sendRegistrationConfirmationEmail, sendCancellationNotificationEmail};

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>About Us - EventSphere</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#2563EB', secondary: '#FACC15', accent: '#22C55E', background: '#F9FAFB', text: '#111827' },
+          animation: { 'fade-in': 'fadeIn 0.6s ease-in-out', 'slide-up': 'slideUp 0.5s ease-out' },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+          },
+        },
+      },
+    };
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    .gradient-text{background:linear-gradient(135deg,#2563EB 0%,#22C55E 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .gradient-bg{background:linear-gradient(135deg,#2563EB 0%,#22C55E 100%)}
+    .glass-effect{backdrop-filter:blur(10px);background:rgba(255,255,255,.9)}
+    .card-hover{transition:all .3s ease}
+    .card-hover:hover{transform:translateY(-5px);box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04)}
+  </style>
+</head>
+<body class="bg-background text-text min-h-screen">
+  <nav id="navbar-container" class="fixed top-0 w-full z-50 glass-effect border-b border-gray-200"></nav>
+
+  <main class="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <header class="text-center mb-12 animate-fade-in">
+        <h1 class="text-4xl sm:text-5xl font-bold gradient-text mb-4">About EventSphere</h1>
+        <p class="text-gray-600 text-lg max-w-3xl mx-auto">EventSphere is your university's central hub for discovering, organizing, and engaging with campus events. Built to be fast, modern, and student-friendly.</p>
+      </header>
+
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 animate-slide-up">
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+          <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mb-4">
+            <i class="bi bi-bolt text-white text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Fast & Intuitive</h3>
+          <p class="text-gray-600">A clean, responsive interface powered by Tailwind CSS for an effortless experience on any device.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+          <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mb-4">
+            <i class="bi bi-people text-white text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Community First</h3>
+          <p class="text-gray-600">Connect students, clubs, and admins through events, notifications, and certificates.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+          <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mb-4">
+            <i class="bi bi-shield-check text-white text-xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Reliable & Secure</h3>
+          <p class="text-gray-600">Robust authentication and admin tools keep the platform safe and organized.</p>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl shadow-lg p-8 card-hover mb-16">
+        <h2 class="text-2xl font-bold mb-4">What You Can Do</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="font-semibold mb-2">Students</h3>
+            <ul class="list-disc list-inside text-gray-600 space-y-1">
+              <li>Discover and filter events</li>
+              <li>Register and manage reminders</li>
+              <li>Give feedback and earn certificates</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">Clubs</h3>
+            <ul class="list-disc list-inside text-gray-600 space-y-1">
+              <li>Create events with rich details</li>
+              <li>Track attendees and verify presence</li>
+              <li>Upload certificate templates</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="text-center animate-fade-in">
+        <a href="team.html" class="inline-flex items-center gradient-bg text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          Meet Our Team
+          <i class="bi bi-arrow-right ml-2"></i>
+        </a>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+  <script src="config.js"></script>
+  <script src="navbar.js"></script>
+  <script src="footer.js"></script>
+</body>
+</html>
+
+

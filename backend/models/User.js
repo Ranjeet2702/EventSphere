@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
 
   // New Fields
   profileImageUrl: { type: String, default: '' },
+  phone: { type: String, default: '' },
   googleId: { type: String },
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date }

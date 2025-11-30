@@ -19,15 +19,16 @@ router.get('/profile', verifyToken, async (req, res) => {
     }
 });
 
-// Update user's profile (name, email)
+// Update user's profile (name, email, phone)
 router.patch('/profile', verifyToken, async (req, res) => {
-    const { name, email } = req.body;
+    const { name, email, phone } = req.body;
     try {
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ error: 'User not found.' });
 
         if (name) user.name = name;
         if (email) user.email = email;
+        if (typeof phone !== 'undefined') user.phone = phone;
 
         await user.save();
         res.json({ message: 'Profile updated successfully.', user });

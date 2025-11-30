@@ -1,110 +1,576 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Event Details - EventSphere</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Event Details - EventSphere</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#FACC15',
+                        accent: '#22C55E',
+                        background: '#F9FAFB',
+                        text: '#111827'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'scale-up': 'scaleUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        scaleUp: {
+                            '0%': { transform: 'scale(1)' },
+                            '100%': { transform: 'scale(1.05)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 2rem;
+            color: #e4e5e9;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #FACC15;
+        }
+        .star-rating input:checked ~ label {
+            color: #FACC15;
+        }
+    </style>
 </head>
-<body>
- <header id="navbar-container"></header>
+<body class="bg-background text-text min-h-screen">
+    <!-- Sticky Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-gray-200 transition-all duration-300" id="navbar-container">
+        <!-- Navbar content will be injected here -->
+    </nav>
 
-  <div class="container mt-5" id="event-details-container">
-      <p class="text-center text-muted">Loading event details...</p>
-  </div>
+    <!-- Event Details Section -->
+    <section class="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Loading State -->
+            <div id="event-details-container" class="animate-fade-in">
+                <div class="text-center py-12">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p class="text-gray-600">Loading event details...</p>
+                </div>
+            </div>
 
-<script src="config.js"></script>
-<script>
-    const eventId = new URLSearchParams(window.location.search).get("id");
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+            <!-- Reviews Section -->
+            <div id="reviews-section" class="mt-16 animate-slide-up"></div>
+    </div>
+    </section>
 
-    function timeFormatter(timeStr) {
-        if (!timeStr) return 'N/A';
-        const [hour, minute] = timeStr.split(':');
-        return new Date(1970, 0, 1, hour, minute).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-    }
+    <script src="config.js"></script>
+    <script src="notificationSystem.js"></script>
+    <script>
+        const eventId = new URLSearchParams(window.location.search).get("id");
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        const headers = { 'Authorization': `Bearer ${token}` };
+        const jsonHeaders = { 'Content-Type': 'application/json', ...headers };
 
-    async function handleRegistration(e) {
-        e.preventDefault();
-        const registerBtn = e.target.querySelector("button[type='submit']");
-        registerBtn.disabled = true;
-        registerBtn.innerText = 'Processing...';
-
-        const collegeName = document.getElementById("collegeName")?.value.trim() || '';
-        try {
-            const res = await fetch(`${BASE_URL}/api/events/${eventId}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ collegeName })
-            });
-            const result = await res.json();
-            if (!res.ok) throw new Error(result.error);
-            document.getElementById("message").innerText = '✅ Registered Successfully!';
-            registerBtn.className = 'btn btn-success w-100';
-            registerBtn.innerText = 'Registered';
-        } catch (error) {
-            document.getElementById("message").innerText = `❌ ${error.message}`;
-            registerBtn.disabled = false;
-            registerBtn.innerText = 'Register Now';
+        function timeFormatter(timeStr) {
+            if (!timeStr) return 'N/A';
+            const [hour, minute] = timeStr.split(':');
+            return new Date(1970, 0, 1, hour, minute).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
         }
-    }
 
-    async function loadEventDetails() {
-        const container = document.getElementById('event-details-container');
-        try {
-            const res = await fetch(`${BASE_URL}/api/events`);
-            const events = await res.json();
-            const event = events.find(e => e._id === eventId);
-            if (!event) throw new Error('Event not found.');
-
-            const isRegistered = userId && (event.attendees || []).some(a => a.userId?._id === userId);
-            let regButtonHtml = `<button type="submit" class="btn btn-primary w-100">Register Now</button>`;
-            if (isRegistered) regButtonHtml = `<button class="btn btn-success w-100" disabled>Already Registered</button>`;
-            if (event.status !== 'approved') regButtonHtml = `<button class="btn btn-secondary w-100" disabled>Registration Closed</button>`;
-
-            // FIX: Display more event details in a structured list
-            container.innerHTML = `
-                <div class="row">
-                    <div class="col-md-8">
-                        <img src="${BASE_URL}${event.posterUrl}" class="img-fluid rounded mb-3 shadow-sm" onerror="this.style.display='none'">
-                        <h2>${event.title}</h2>
-                        <p class="text-muted">Organized by: ${event.createdBy?.name || 'University Staff'}</p>
-                        <hr>
-                        <p>${event.description}</p>
-                        <ul class="list-group list-group-flush mt-4">
-                            <li class="list-group-item"><strong>Date & Time:</strong> ${new Date(event.date).toLocaleDateString()} at ${timeFormatter(event.time)}</li>
-                            <li class="list-group-item"><strong>Venue:</strong> ${event.venue}</li>
-                            <li class="list-group-item"><strong>Mode:</strong> ${event.eventMode}</li>
-                            <li class="list-group-item"><strong>Event Type:</strong> ${event.type}</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card shadow-sm">
-                          <div class="card-body">
-                            <h5 class="card-title">Registration Details</h5>
-                            <hr>
-                            <p><strong>Fee:</strong> ${event.registrationFee > 0 ? `$${event.registrationFee}`: 'Free'}</p>
-                            <p><strong>Slots Filled:</strong> ${(event.attendees || []).length} / ${event.registrationLimit > 0 ? event.registrationLimit : 'Unlimited'}</p>
-                            <form id="registration-form" class="mt-3">
-                              ${(event.type === 'Inter College' && !isRegistered) ? `<div class="mb-3"><label class="form-label">College Name</label><input type="text" id="collegeName" class="form-control" required></div>` : ''}
-                              ${regButtonHtml}
-                              <p id="message" class="mt-2 text-center"></p>
-                            </form>
-                          </div>
-                        </div>
-                    </div>
-                </div>`;
+        async function handleRegistration(e) {
+            e.preventDefault();
+            const registerBtn = e.target.querySelector("button[type='submit']");
+            const originalText = registerBtn.innerHTML;
             
-            document.getElementById('registration-form').addEventListener('submit', handleRegistration);
-        } catch (error) { 
-            container.innerHTML = `<p class="text-danger text-center"><strong>Error:</strong> ${error.message}</p>`; 
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = `
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Processing...</span>
+                </div>
+            `;
+            
+            const collegeName = document.getElementById("collegeName")?.value.trim() || '';
+            
+            try {
+                const res = await fetch(`${BASE_URL}/api/events/${eventId}/register`, {
+                    method: 'POST',
+                    headers: jsonHeaders,
+                    body: JSON.stringify({ collegeName })
+                });
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error);
+                
+                document.getElementById("message").innerHTML = `
+                    <div class="flex items-center space-x-2 text-accent">
+                        <i class="bi bi-check-circle"></i>
+                        <span>Registered Successfully!</span>
+                    </div>
+                `;
+                registerBtn.className = 'w-full bg-accent text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105';
+                registerBtn.innerHTML = `
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="bi bi-check-circle"></i>
+                        <span>Registered</span>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById("message").innerHTML = `
+                    <div class="flex items-center space-x-2 text-red-600">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>${error.message}</span>
+                    </div>
+                `;
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = originalText;
+            }
         }
-    }
 
-    document.addEventListener("DOMContentLoaded", loadEventDetails);
-</script>
-<script src="navbar.js"></script>
+        async function handleReviewSubmission(e) {
+            e.preventDefault();
+            const rating = e.target.rating.value;
+            const comment = e.target.comment.value;
+            
+            if (!rating) {
+                alert('Please select a star rating.');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector("button[type='submit']");
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Submitting...</span>
+                </div>
+            `;
+            
+            try {
+                const res = await fetch(`${BASE_URL}/api/feedback/${eventId}`, {
+                    method: 'POST',
+                    headers: jsonHeaders,
+                    body: JSON.stringify({ rating, comment })
+                });
+                if (!res.ok) throw new Error((await res.json()).error);
+                
+                // Show success message
+                submitBtn.innerHTML = `
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="bi bi-check-circle"></i>
+                        <span>Submitted!</span>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                window.location.reload();
+                }, 1000);
+            } catch (error) {
+                alert('Failed to submit review: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        async function setEventReminder() {
+            const reminderTime = document.getElementById('reminderTime').value;
+
+            if (window.notificationSystem) {
+                await window.notificationSystem.createReminder(eventId, parseInt(reminderTime));
+            } else {
+                try {
+                    const response = await fetch(`${BASE_URL}/api/notifications/reminder`, {
+                        method: 'POST',
+                        headers: jsonHeaders,
+                        body: JSON.stringify({ eventId, reminderTime: parseInt(reminderTime) })
+                    });
+
+                    if (response.ok) {
+                        alert(`Reminder set! You'll be notified ${reminderTime} minutes before the event starts.`);
+                    } else {
+                        const error = await response.json();
+                        alert('Error: ' + error.error);
+                    }
+                } catch (error) {
+                    alert('Failed to set reminder: ' + error.message);
+                }
+            }
+        }
+
+        async function loadEventDetails() {
+            try {
+                const res = await fetch(`${BASE_URL}/api/events/${eventId}`);
+                if (!res.ok) throw new Error('Event not found');
+                const event = await res.json();
+
+                const isRegistered = (event.attendees || []).some(a => a.userId?._id === userId);
+                const hasReviewed = event.feedback && event.feedback.some(f => f.userId?._id === userId);
+                const eventDateTime = new Date(event.date);
+                if (event.time) {
+                    const [hours, minutes] = event.time.split(':');
+                    eventDateTime.setHours(hours, minutes, 0, 0);
+                }
+                const isPast = eventDateTime < new Date();
+
+                let ratingHtml = '';
+                if (event.averageRating) {
+                    ratingHtml = `
+                        <div class="flex items-center space-x-2 mb-4">
+                            <div class="flex items-center">
+                                ${Array.from({ length: 5 }, (_, i) => 
+                                    `<i class="bi bi-star${i < Math.floor(event.averageRating) ? '-fill' : ''} text-secondary"></i>`
+                                ).join('')}
+                            </div>
+                            <span class="text-lg font-semibold text-text">${event.averageRating.toFixed(1)}</span>
+                            <span class="text-gray-500">(${event.feedback?.length || 0} reviews)</span>
+                        </div>
+                    `;
+                }
+
+                const statusBadge = event.status === 'cancelled' 
+                    ? '<span class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm font-semibold">Cancelled</span>'
+                    : isPast 
+                        ? '<span class="bg-gray-500 text-white px-3 py-1 rounded-lg text-sm font-semibold">Past Event</span>'
+                        : '<span class="bg-accent text-white px-3 py-1 rounded-lg text-sm font-semibold">Upcoming</span>';
+
+                const container = document.getElementById('event-details-container');
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Event Image -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                                <div class="relative h-96 overflow-hidden">
+                                    <img src="${BASE_URL}${event.posterUrl}" 
+                                         class="w-full h-full object-cover"
+                                         onerror="this.onerror=null;this.src='https://via.placeholder.com/800x400.png?text=EventSphere';">
+                                    <div class="absolute top-4 left-4">
+                                        ${statusBadge}
+                                    </div>
+                                </div>
+                                <div class="p-8">
+                                    <h1 class="text-3xl font-bold mb-4 text-text">${event.title}</h1>
+                                    ${ratingHtml}
+                                    <p class="text-gray-600 text-lg leading-relaxed mb-6">${event.description}</p>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                                                <i class="bi bi-calendar3 text-white"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm text-gray-500">Date & Time</p>
+                                                <p class="font-semibold">${eventDateTime.toLocaleDateString('en-US', { 
+                                                    weekday: 'long', 
+                                                    year: 'numeric', 
+                                                    month: 'long', 
+                                                    day: 'numeric' 
+                                                })} at ${timeFormatter(event.time)}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                                                <i class="bi bi-geo-alt text-white"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm text-gray-500">Venue</p>
+                                                <p class="font-semibold">${event.venue || 'TBA'}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                                                <i class="bi bi-tag text-white"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm text-gray-500">Category</p>
+                                                <p class="font-semibold">${event.type}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                                                <i class="bi bi-people text-white"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm text-gray-500">Capacity</p>
+                                                <p class="font-semibold">${event.capacity || 'Unlimited'} participants</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    ${event.competitionType ? `
+                                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="bi bi-trophy text-blue-600"></i>
+                                                <span class="font-semibold text-blue-800">Competition Event</span>
+                                            </div>
+                                            <p class="text-blue-700 mt-1">Type: ${event.competitionType}</p>
+                                        </div>
+                                    ` : ''}
+                                    
+                                    ${event.cancellationReason ? `
+                                        <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="bi bi-exclamation-triangle text-red-600"></i>
+                                                <span class="font-semibold text-red-800">Event Cancelled</span>
+                                            </div>
+                                            <p class="text-red-700 mt-1">Reason: ${event.cancellationReason}</p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Registration & Actions Sidebar -->
+                        <div class="space-y-6">
+                            <!-- Registration Card -->
+                            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                                <h3 class="text-xl font-bold mb-4 text-text">Registration</h3>
+                                
+                                ${isRegistered ? `
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-check-circle text-4xl text-accent mb-2"></i>
+                                        <p class="text-accent font-semibold">You're Registered!</p>
+                                        <p class="text-gray-500 text-sm mt-1">Check your email for confirmation</p>
+                                    </div>
+                                ` : !isPast && event.status !== 'cancelled' ? `
+                                    <form onsubmit="handleRegistration(event)">
+                                        ${event.competitionType === 'Inter College' ? `
+                                            <div class="mb-4">
+                                                <label class="block text-sm font-semibold text-gray-700 mb-2">College Name</label>
+                                                <input type="text" 
+                                                       id="collegeName" 
+                                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                                                       placeholder="Enter your college name"
+                                                       required>
+                        </div>
+                                        ` : ''}
+                                        
+                                        <button type="submit" 
+                                                class="w-full gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                                            Register Now
+                                        </button>
+                                        
+                                        <div id="message" class="mt-3 text-center"></div>
+                                    </form>
+                                ` : `
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-calendar-x text-4xl text-gray-400 mb-2"></i>
+                                        <p class="text-gray-500 font-semibold">Registration Closed</p>
+                                        <p class="text-gray-400 text-sm mt-1">This event is no longer accepting registrations</p>
+                                    </div>
+                                `}
+                            </div>
+
+                            <!-- Reminder Card -->
+                            ${!isPast && event.status !== 'cancelled' ? `
+                                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                                    <h3 class="text-xl font-bold mb-4 text-text flex items-center">
+                                        <i class="bi bi-bell text-primary mr-2"></i>
+                                        Set Reminder
+                                    </h3>
+                                    <div class="space-y-4">
+                                        <select id="reminderTime" 
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300">
+                                            <option value="15">15 minutes</option>
+                                            <option value="30">30 minutes</option>
+                                            <option value="60">1 hour</option>
+                                            <option value="120">2 hours</option>
+                                            <option value="1440">1 day</option>
+                                        </select>
+                                        <button type="button" 
+                                                onclick="setEventReminder()"
+                                                class="w-full border-2 border-primary text-primary px-6 py-3 rounded-xl font-semibold hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105">
+                                            <i class="bi bi-bell mr-2"></i>
+                                            Set Reminder
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">Get notified before the event starts</p>
+                                </div>
+                            ` : ''}
+
+                            <!-- Event Stats -->
+                            <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                                <h3 class="text-xl font-bold mb-4 text-text">Event Stats</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Registered</span>
+                                        <span class="font-semibold">${event.attendees?.length || 0}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Capacity</span>
+                                        <span class="font-semibold">${event.capacity || '∞'}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Reviews</span>
+                                        <span class="font-semibold">${event.feedback?.length || 0}</span>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                `;
+                
+                // Load reviews
+                loadReviews(event);
+
+            } catch (error) { 
+                document.getElementById('event-details-container').innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="bi bi-exclamation-triangle text-6xl text-red-300 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-red-600 mb-2">Error loading event</h3>
+                        <p class="text-red-500">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadReviews(event) {
+            const reviewsSection = document.getElementById('reviews-section');
+            const hasReviewed = event.feedback && event.feedback.some(f => f.userId?._id === userId);
+            const eventDateTime = new Date(event.date);
+            if (event.time) {
+                const [hours, minutes] = event.time.split(':');
+                eventDateTime.setHours(hours, minutes, 0, 0);
+            }
+            const isPast = eventDateTime < new Date();
+
+            let reviewsHtml = `
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-text">Reviews & Ratings</h2>
+            `;
+
+            if (event.feedback && event.feedback.length > 0) {
+                reviewsHtml += `
+                    <div class="space-y-6">
+                        ${event.feedback.map(review => `
+                            <div class="border-b border-gray-200 pb-6 last:border-b-0">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold text-sm">${review.userId?.name?.charAt(0).toUpperCase() || 'U'}</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-text">${review.userId?.name || 'Anonymous'}</p>
+                                            <p class="text-sm text-gray-500">${new Date(review.createdAt).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        ${Array.from({ length: 5 }, (_, i) => 
+                                            `<i class="bi bi-star${i < review.rating ? '-fill' : ''} text-secondary"></i>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                                <p class="text-gray-700">${review.comment}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                reviewsHtml += `
+                    <div class="text-center py-8">
+                        <i class="bi bi-chat-dots text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">No reviews yet. Be the first to review this event!</p>
+                    </div>
+                `;
+            }
+
+            // Add review form for registered users who haven't reviewed yet
+            if (token && !hasReviewed && isPast) {
+                reviewsHtml += `
+                    <div class="mt-8 pt-8 border-t border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-text">Write a Review</h3>
+                        <form onsubmit="handleReviewSubmission(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Rating</label>
+                                <div class="star-rating">
+                                    ${Array.from({ length: 5 }, (_, i) => `
+                                        <input type="radio" name="rating" value="${5-i}" id="star${5-i}">
+                                        <label for="star${5-i}">★</label>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Comment</label>
+                                <textarea name="comment" 
+                                          rows="4"
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                                          placeholder="Share your experience with this event..."
+                                          required></textarea>
+                            </div>
+                            <button type="submit" 
+                                    class="gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                `;
+            }
+
+            reviewsHtml += '</div>';
+            reviewsSection.innerHTML = reviewsHtml;
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadEventDetails);
+    </script>
+    <script src="navbar.js"></script>
+    <div id="footer-container"></div>
+    <script src="footer.js"></script>
 </body>
 </html>

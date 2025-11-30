@@ -73,4 +73,31 @@ router.get('/summary', verifyToken, async (req, res) => {
   }
 });
 
+// --- NEW FEATURE: Route to get event-wise financial details ---
+router.get('/financials', verifyToken, async (req, res) => {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Access denied: Admins only.' });
+    }
+    try {
+        const paidEvents = await Event.find({ 
+            registrationFee: { $gt: 0 },
+            status: 'approved' 
+        }).populate('createdBy', 'name');
+
+        const financialSummary = paidEvents.map(event => ({
+            _id: event._id,
+            title: event.title,
+            club: event.createdBy ? event.createdBy.name : 'N/A',
+            fee: event.registrationFee,
+            registrations: event.attendees.length,
+            totalRevenue: event.attendees.length * event.registrationFee
+        }));
+
+        res.json(financialSummary);
+    } catch (err) {
+        console.error("Financials error:", err);
+        res.status(500).json({ error: 'Failed to fetch financial data.' });
+    }
+});
+// --- END OF NEW FEATURE ---
 module.exports = router;

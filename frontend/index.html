@@ -2,78 +2,407 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EventSphere - Home</title>
+    <title>EventSphere - Your University Event Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#FACC15',
+                        accent: '#22C55E',
+                        background: '#F9FAFB',
+                        text: '#111827'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'scale-up': 'scaleUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        scaleUp: {
+                            '0%': { transform: 'scale(1)' },
+                            '100%': { transform: 'scale(1.05)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
 </head>
-<body>
-    <header id="navbar-container"></header>
+<body class="bg-background text-text min-h-screen">
+    <!-- Sticky Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-gray-200 transition-all duration-300" id="navbar-container">
+        <!-- Navbar content will be injected here -->
+    </nav>
 
-    <header class="bg-primary text-white text-center py-5">
-        <h1>Welcome to EventSphere</h1>
-        <p class="lead">Your university's central hub for all events.</p>
-    </header>
-
-    <section class="container my-5">
-        <h2 class="text-center mb-4">Upcoming Approved Events</h2>
-        <div class="row" id="events-container">
-            <p class="text-center text-muted">Loading events...</p>
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center animate-fade-in">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 gradient-text">
+                Welcome to EventSphere
+            </h1>
+            <p class="text-xl sm:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Your university's central hub for discovering, joining, and creating amazing events. 
+                Connect with your community and make every moment count.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="login.html" class="gradient-bg text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    Get Started
+                </a>
+                <a href="#events" class="border-2 border-primary text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105">
+                    Explore Events
+                </a>
+                <a href="team.html" class="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg shadow hover:shadow-md border border-gray-200 transition-all duration-300 transform hover:scale-105">
+                    Meet Our Team
+                </a>
+                <a href="login.html" class="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-all duration-300 transform hover:scale-105">
+                    Host an Event
+                </a>
+            </div>
         </div>
     </section>
 
-    <footer class="bg-dark text-white text-center p-3 mt-5">
-        © 2025 EventSphere
-    </footer>
+    <!-- Events Section -->
+    <section id="events" class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 animate-slide-up">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-4 gradient-text">
+                    Upcoming Events
+                </h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    Discover exciting events happening on campus. Filter by category or search for specific events.
+                </p>
+            </div>
+
+            <!-- Search and Filter Controls -->
+            <div class="max-w-4xl mx-auto mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <div class="relative">
+                            <i class="bi bi-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="search-bar" 
+                                   class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                                   placeholder="Search for events by title...">
+                        </div>
+                    </div>
+                    <div>
+                        <select id="category-filter" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300">
+                            <option value="All">All Categories</option>
+                            <option value="Tech">Tech</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Seminar">Seminar</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="events-container">
+                <div class="col-span-full flex justify-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+            </div>
+
+            <!-- View All CTA -->
+            <div class="text-center mt-10">
+                <button id="view-all-events-btn" class="gradient-bg text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    View All Events
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-4 gradient-text">
+                    Why Choose EventSphere?
+                </h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    Everything you need to stay connected with your university community
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-8 bg-white rounded-2xl shadow-lg card-hover">
+                    <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="bi bi-calendar-event text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-text">Discover Events</h3>
+                    <p class="text-gray-600">Browse through a wide variety of events happening on campus, from tech workshops to cultural festivals.</p>
+                </div>
+                
+                <div class="text-center p-8 bg-white rounded-2xl shadow-lg card-hover">
+                    <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="bi bi-bell text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-text">Smart Notifications</h3>
+                    <p class="text-gray-600">Get timely reminders and updates about events you're interested in, never miss an important moment.</p>
+                </div>
+                
+                <div class="text-center p-8 bg-white rounded-2xl shadow-lg card-hover">
+                    <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="bi bi-people text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-text">Connect & Engage</h3>
+                    <p class="text-gray-600">Join clubs, participate in events, and build meaningful connections with your university community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section (adapted to theme) -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 gradient-bg text-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-2">What Students Say</h2>
+                <p class="text-white/90">Experiences from our community</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white/10 rounded-2xl backdrop-blur p-6 card-hover">
+                    <div class="text-4xl text-white/40 leading-none mb-2">“</div>
+                    <p class="mb-6">EventSphere helped me find the best tech talks on campus. I've attended 3 hackathons this semester thanks to this platform!</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-12 h-12 rounded-full mr-3" alt="Student" />
+                        <div>
+                            <h5 class="font-semibold">Sarah Johnson</h5>
+                            <small class="text-white/80">Computer Science Major</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white/10 rounded-2xl backdrop-blur p-6 card-hover">
+                    <div class="text-4xl text-white/40 leading-none mb-2">“</div>
+                    <p class="mb-6">As an international student, EventSphere made it so easy to find cultural events where I could meet people from my home country.</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" class="w-12 h-12 rounded-full mr-3" alt="Student" />
+                        <div>
+                            <h5 class="font-semibold">Raj Patel</h5>
+                            <small class="text-white/80">International Student</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white/10 rounded-2xl backdrop-blur p-6 card-hover">
+                    <div class="text-4xl text-white/40 leading-none mb-2">“</div>
+                    <p class="mb-6">Organizing our club events through EventSphere doubled our attendance. The promotion tools are fantastic!</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full mr-3" alt="Student" />
+                        <div>
+                            <h5 class="font-semibold">Emily Chen</h5>
+                            <small class="text-white/80">Drama Club President</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section (adapted to theme) -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-gray-200">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-text mb-4">Ready to Explore Campus Life?</h2>
+            <p class="text-gray-600 mb-8">Join thousands of students discovering amazing events every day.</p>
+            <a href="signup.html" class="gradient-bg text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                Get Started Now
+            </a>
+        </div>
+    </section>
+
+    <div id="footer-container"></div>
 
     <script src="config.js"></script>
     <script>
-        async function loadUpcomingEvents() {
+        let allApprovedEvents = [];
+
+        // Enhanced event card renderer with modern design
+        function renderEventCard(event) {
+            const eventDate = new Date(event.date);
+            const now = new Date();
+            const isUpcoming = eventDate >= now;
+            
+            let ratingHtml = '';
+            if (event.averageRating) {
+                ratingHtml = `
+                    <div class="absolute top-4 right-4 bg-secondary text-text px-2 py-1 rounded-lg text-sm font-semibold">
+                        ${event.averageRating.toFixed(1)} ★
+                    </div>
+                `;
+            }
+
+            const statusBadge = isUpcoming ? 
+                '<span class="bg-accent text-white px-2 py-1 rounded-lg text-xs font-semibold">Upcoming</span>' :
+                '<span class="bg-gray-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">Past</span>';
+
+            return `
+                <div class="animate-slide-up">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover relative">
+                        ${ratingHtml}
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${BASE_URL}${event.posterUrl}" 
+                                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                 onerror="this.onerror=null;this.src='https://via.placeholder.com/400x200.png?text=EventSphere';">
+                            <div class="absolute top-4 left-4">
+                                ${statusBadge}
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 text-text line-clamp-2">${event.title}</h3>
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="bi bi-calendar3 mr-2"></i>
+                                <span>${eventDate.toLocaleDateString('en-US', { 
+                                    weekday: 'short', 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                })}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600 mb-4">
+                                <i class="bi bi-geo-alt mr-2"></i>
+                                <span>${event.venue || 'TBA'}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm font-semibold">
+                                    ${event.type}
+                                </span>
+                                <a href="event.html?id=${event._id}" 
+                                   class="gradient-bg text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEvents() {
+            const eventsContainer = document.getElementById('events-container');
+            const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+            const categoryFilter = document.getElementById('category-filter').value;
+
+            const now = new Date();
+            
+            const filteredEvents = allApprovedEvents.filter(event => {
+                const eventDateTime = new Date(event.date);
+                if (event.time) {
+                    const [hours, minutes] = event.time.split(':');
+                    eventDateTime.setHours(hours, minutes, 0, 0);
+                }
+
+                const matchesSearch = event.title.toLowerCase().includes(searchTerm);
+                const matchesCategory = categoryFilter === 'All' || event.type === categoryFilter;
+                const isUpcoming = eventDateTime >= now;
+
+                return matchesSearch && matchesCategory && isUpcoming;
+            });
+
+            if (filteredEvents.length > 0) {
+                const eventsHtml = filteredEvents.map(event => renderEventCard(event)).join('');
+                eventsContainer.innerHTML = eventsHtml;
+            } else {
+                eventsContainer.innerHTML = `
+                    <div class="col-span-full">
+                        <div class="text-center py-12">
+                            <i class="bi bi-calendar-x text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-600 mb-2">No events found</h3>
+                            <p class="text-gray-500">Try adjusting your search criteria or check back later for new events.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function initializeHomepage() {
             const eventsContainer = document.getElementById('events-container');
             try {
                 const res = await fetch(`${BASE_URL}/api/events`);
                 if (!res.ok) throw new Error('Failed to fetch events');
                 const allEvents = await res.json();
                 
-                let eventsHtml = '';
-                // --- START OF FIX: More accurate time checking ---
-                const now = new Date(); // Get the current date and time
+                allApprovedEvents = allEvents.filter(e => e.status === 'approved');
+                
+                renderEvents();
 
-                allEvents
-                    .filter(event => {
-                        if (event.status !== 'approved' || !event.date || !event.time) {
-                            return false;
-                        }
-                        // Create a full Date object with the event's specific time
-                        const eventDateTime = new Date(event.date);
-                        const [hours, minutes] = event.time.split(':');
-                        eventDateTime.setHours(hours, minutes, 0, 0);
-                        
-                        // Only include the event if its time is in the future
-                        return eventDateTime >= now;
-                    })
-                    .forEach(event => {
-                // --- END OF FIX ---
-                        eventsHtml += `
-                            <div class="col-md-4 mb-4">
-                                <div class="card h-100 shadow-sm">
-                                    <img src="${BASE_URL}${event.posterUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" onerror="this.onerror=null;this.src='https://via.placeholder.com/400x200.png?text=EventSphere';">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${event.title}</h5>
-                                        <p class="card-text">${new Date(event.date).toLocaleDateString()}</p>
-                                        <a href="event.html?id=${event._id}" class="btn btn-primary">View Details</a>
-                                    </div>
-                                </div>
-                            </div>`;
+                // Add event listeners for real-time filtering
+                document.getElementById('search-bar').addEventListener('input', renderEvents);
+                document.getElementById('category-filter').addEventListener('change', renderEvents);
+                const viewAllBtn = document.getElementById('view-all-events-btn');
+                if (viewAllBtn) {
+                    viewAllBtn.addEventListener('click', () => {
+                        // Clear filters to show all upcoming events
+                        document.getElementById('search-bar').value = '';
+                        document.getElementById('category-filter').value = 'All';
+                        renderEvents();
+                        // Smooth scroll to events grid
+                        document.getElementById('events').scrollIntoView({ behavior: 'smooth' });
                     });
+                }
 
-                eventsContainer.innerHTML = eventsHtml || '<p class="text-center text-muted">No upcoming events at this time.</p>';
             } catch (error) {
-                eventsContainer.innerHTML = `<p class="text-center text-danger">${error.message}</p>`;
+                eventsContainer.innerHTML = `
+                    <div class="col-span-full">
+                        <div class="text-center py-12">
+                            <i class="bi bi-exclamation-triangle text-6xl text-red-300 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-red-600 mb-2">Error loading events</h3>
+                            <p class="text-red-500">${error.message}</p>
+                        </div>
+                    </div>
+                `;
             }
         }
-        document.addEventListener("DOMContentLoaded", loadUpcomingEvents);
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", initializeHomepage);
     </script>
     <script src="navbar.js"></script>
+    <script src="footer.js"></script>
 </body>
+</html>
 </html>

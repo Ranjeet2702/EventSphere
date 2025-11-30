@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Our Team - EventSphere</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { primary: '#2563EB', secondary: '#FACC15', accent: '#22C55E', background: '#F9FAFB', text: '#111827' }, animation: { 'fade-in': 'fadeIn 0.6s ease-in-out', 'slide-up': 'slideUp 0.5s ease-out' }, keyframes: { fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }, slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }, }, }, }, };
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    .gradient-text{background:linear-gradient(135deg,#2563EB 0%,#22C55E 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .gradient-bg{background:linear-gradient(135deg,#2563EB 0%,#22C55E 100%)}
+    .glass-effect{backdrop-filter:blur(10px);background:rgba(255,255,255,.9)}
+    .card-hover{transition:all .3s ease}
+    .card-hover:hover{transform:translateY(-6px);box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04)}
+  </style>
+</head>
+<body class="bg-background text-text min-h-screen">
+  <nav id="navbar-container" class="fixed top-0 w-full z-50 glass-effect border-b border-gray-200"></nav>
+
+  <main class="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <header class="text-center mb-12 animate-fade-in">
+        <h1 class="text-4xl sm:text-5xl font-bold gradient-text mb-3">Meet Our Team</h1>
+        <p class="text-gray-600 text-lg">The people behind EventSphere</p>
+      </header>
+
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-slide-up">
+        <!-- 6 Team Cards -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover text-center">
+          <img src="https://i.pravatar.cc/240?img=12" alt="Team Member" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" />
+          <h3 class="text-xl font-bold">Arjun Mehta</h3>
+          <p class="text-primary font-medium">Product Lead</p>
+          <p class="text-gray-600 mt-2">Drives the product vision and ensures a delightful user experience.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover text-center">
+          <img src="https://i.pravatar.cc/240?img=32" alt="Team Member" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" />
+          <h3 class="text-xl font-bold">Neha Sharma</h3>
+          <p class="text-primary font-medium">UI/UX Designer</p>
+          <p class="text-gray-600 mt-2">Designs clean, modern interfaces aligned with accessibility best practices.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover text-center">
+          <img src="https://i.pravatar.cc/240?img=15" alt="Team Member" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" />
+          <h3 class="text-xl font-bold">Rahul Verma</h3>
+          <p class="text-primary font-medium">Frontend Engineer</p>
+          <p class="text-gray-600 mt-2">Implements responsive layouts and interactive components with Tailwind.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover text-center">
+          <img src="https://i.pravatar.cc/240?img=68" alt="Team Member" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" />
+          <h3 class="text-xl font-bold">Sanya Kapoor</h3>
+          <p class="text-primary font-medium">Backend Engineer</p>
+          <p class="text-gray-600 mt-2">Builds scalable APIs and ensures smooth data flow across the app.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover text-center">
+          <img src="https://i.pravatar.cc/240?img=23" alt="Team Member" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" />
+          <h3 class="text-xl font-bold">Vikram Singh</h3>
+          <p class="text-primary font-medium">QA Engineer</p>
+          <p class="text-gray-600 mt-2">Maintains quality with automated tests and meticulous reviews.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg p-6 card-hover text-center">
+          <img src="https://i.pravatar.cc/240?img=5" alt="Team Member" class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" />
+          <h3 class="text-xl font-bold">Aisha Khan</h3>
+          <p class="text-primary font-medium">Data Analyst</p>
+          <p class="text-gray-600 mt-2">Turns event engagement data into insights for better decisions.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+  <script src="config.js"></script>
+  <script src="navbar.js"></script>
+  <script src="footer.js"></script>
+</body>
+</html>
+
+

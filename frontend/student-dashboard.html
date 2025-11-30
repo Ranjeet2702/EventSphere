@@ -4,81 +4,233 @@
     <meta charset="UTF-8">
     <title>Student Dashboard - EventSphere</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#FACC15',
+                        accent: '#22C55E',
+                        background: '#F9FAFB',
+                        text: '#111827'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'scale-up': 'scaleUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        scaleUp: {
+                            '0%': { transform: 'scale(1)' },
+                            '100%': { transform: 'scale(1.05)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
 </head>
-<body>
-    <header id="navbar-container"></header>
-    <div class="container mt-4">
-        <h3>Upcoming Events</h3>
-        <div class="row" id="upcoming-events"></div>
-        
-        <h3 class="mt-5">Your Registered Events</h3>
-        <div class="row" id="registered-events"></div>
+<body class="bg-background text-text min-h-screen">
+    <!-- Sticky Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-gray-200 transition-all duration-300" id="navbar-container">
+        <!-- Navbar content will be injected here -->
+    </nav>
 
-        <h3 class="mt-5">Recommended For You</h3>
-        <div class="row" id="recommended-events"></div>
+    <!-- Dashboard Header -->
+    <section class="pt-24 pb-8 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="animate-fade-in">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-2 gradient-text">
+                    Welcome back, <span id="user-name">Student</span>! 👋
+                </h1>
+                <p class="text-gray-600 text-lg">Discover and join amazing events happening on campus</p>
+            </div>
+        </div>
+    </section>
 
-        <h3 class="mt-5">Past Events</h3>
-        <div class="row" id="past-events"></div>
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center mt-4" id="pagination-container"></ul>
-        </nav>
+    <!-- Dashboard Content -->
+    <section class="py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+                            <i class="bi bi-calendar-event text-white text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Upcoming Events</p>
+                            <p class="text-2xl font-bold text-text" id="upcoming-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+                            <i class="bi bi-check-circle text-white text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Registered Events</p>
+                            <p class="text-2xl font-bold text-text" id="registered-count">0</p>
+                        </div>
+                    </div>
+    </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+                            <i class="bi bi-trophy text-white text-xl"></i>
+          </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Certificates Earned</p>
+                            <p class="text-2xl font-bold text-text" id="certificates-count">0</p>
+          </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Events Section -->
+            <div class="mb-12 animate-slide-up">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-text flex items-center">
+                        <i class="bi bi-calendar-event text-primary mr-3"></i>
+                        Upcoming Events
+                    </h2>
+                    <a href="index.html" class="text-primary hover:text-primary/80 font-medium transition-colors duration-300">
+                        View All →
+                    </a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="upcoming-events">
+                    <div class="col-span-full flex justify-center py-8">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registered Events Section -->
+            <div class="mb-12 animate-slide-up">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-text flex items-center">
+                        <i class="bi bi-check-circle text-accent mr-3"></i>
+                        Your Registered Events
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="registered-events">
+                    <div class="col-span-full flex justify-center py-8">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Past Events Section -->
+            <div class="mb-12 animate-slide-up">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-text flex items-center">
+                        <i class="bi bi-clock-history text-gray-500 mr-3"></i>
+                        Past Events
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="past-events">
+                    <div class="col-span-full flex justify-center py-8">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Events Section -->
+            <div class="mb-12 animate-slide-up">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-text flex items-center">
+                        <i class="bi bi-stars text-yellow-500 mr-3"></i>
+                        Recommended For You
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="recommended-events">
+                    <div class="col-span-full flex justify-center py-8">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inter-College Event Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="collegeNameModal">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-text">Inter-College Event</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-600 transition-colors duration-300" onclick="closeModal()">
+                    <i class="bi bi-x text-2xl"></i>
+                </button>
+            </div>
+            <p class="text-gray-600 mb-6">This is an inter-college event. Please provide your college name to register.</p>
+            <input type="text" 
+                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 mb-6"
+                   id="modalCollegeName" 
+                   placeholder="Your College Name" 
+                   required>
+            <div class="flex space-x-4">
+                <button type="button" 
+                        class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
+                        onclick="closeModal()">
+                    Cancel
+                </button>
+                <button type="button" 
+                        class="flex-1 gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                        id="confirmRegistrationBtn">
+                    Confirm Registration
+                </button>
+        </div>
+      </div>
     </div>
 
     <script src="config.js"></script>
+    <script src="notificationSystem.js"></script>
     <script>
         const userId = localStorage.getItem("userId");
         if (!userId) window.location.href = "login.html";
 
         const headers = { 'Authorization': `Bearer ${localStorage.getItem('token')}` };
-        let allPastEvents = [];
-        const eventsPerPage = 6;
-
-        const loadingSpinner = `<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>`;
-        const emptyState = (message) => `<div class="col-12"><div class="text-center p-4 bg-light rounded"><p class="text-muted mb-0">${message}</p></div></div>`;
         
-        async function handleDirectRegistration(eventId, eventTitle, buttonElement) {
-            if (!confirm(`Are you sure you want to register for "${eventTitle}"?`)) return;
-            buttonElement.disabled = true;
-            buttonElement.innerText = 'Registering...';
-            try {
-                const res = await fetch(`${BASE_URL}/api/events/${eventId}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...headers },
-                    body: JSON.stringify({ collegeName: 'N/A' })
-                });
-                const result = await res.json();
-                if (!res.ok) throw new Error(result.error);
-                alert('Successfully registered!');
-                loadAllData();
-            } catch (error) {
-                alert(`Registration failed: ${error.message}`);
-                buttonElement.disabled = false;
-                buttonElement.innerText = 'Register';
-            }
-        }
-        
-        async function downloadCertificate(eventId, eventTitle) {
-            try {
-                const res = await fetch(`${BASE_URL}/api/certificates/download/${eventId}/${userId}`, { headers });
-                if (!res.ok) throw new Error((await res.json()).error || 'Download failed');
-                const blob = await res.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Certificate_${eventTitle.replace(/\s/g, '_')}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
-            } catch (error) {
-                alert(`Download failed: ${error.message}`);
-            }
-        }
+        // Update user name
+        document.getElementById('user-name').textContent = localStorage.getItem('name') || 'Student';
 
-        function renderEventCard(event, isForPastEvents = false) {
-            if (!event || !event.title) return '';
+        // Enhanced event card renderer with modern design
+        function renderEventCard(event) {
             const isRegistered = (event.attendees || []).some(a => a.userId?._id === userId);
             const hasAttended = isRegistered && (event.attendees || []).find(a => a.userId?._id === userId)?.isAttended;
             
@@ -89,131 +241,328 @@
             }
             const isPast = eventDateTime < new Date();
 
-            let buttonHtml;
-            if (isRegistered) {
-                buttonHtml = (isPast && hasAttended)
-                    ? `<button onclick="downloadCertificate('${event._id}', \`${event.title}\`)" class="btn btn-success w-100 mt-auto">Download Certificate</button>`
-                    : `<a href="event.html?id=${event._id}" class="btn btn-info w-100 mt-auto">View Details</a>`;
-            } else if (isForPastEvents) {
-                buttonHtml = `<button class="btn btn-secondary w-100 mt-auto" disabled>Event Over</button>`;
+            // Don't render past events for non-registered users
+            if (!isRegistered && isPast) {
+                return `
+                    <div class="animate-slide-up">
+                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover opacity-75">
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="${BASE_URL}${event.posterUrl}" 
+                                     class="w-full h-full object-cover"
+                                     onerror="this.onerror=null;this.src='https://via.placeholder.com/400x200.png?text=EventSphere';">
+                                <div class="absolute top-4 left-4">
+                                    <span class="bg-gray-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">Past</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-2 text-text">${event.title}</h3>
+                                <div class="flex items-center text-gray-600 mb-4">
+                                    <i class="bi bi-calendar3 mr-2"></i>
+                                    <span>${new Date(event.date).toLocaleDateString()}</span>
+                                </div>
+                                <button class="w-full px-6 py-3 bg-gray-300 text-gray-600 rounded-xl font-semibold cursor-not-allowed">
+                                    Event Over
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            let statusBadge = '';
+            let buttonHtml = '';
+            let cardClass = '';
+
+            if (event.status === 'cancelled') {
+                statusBadge = '<span class="bg-red-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">Cancelled</span>';
+                buttonHtml = `<button class="w-full px-6 py-3 bg-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-400 transition-all duration-300" onclick="alert('Reason: ${event.cancellationReason || 'No reason provided.'}')">View Reason</button>`;
+                cardClass = 'opacity-50';
+            } else if (isRegistered) {
+                if (isPast) {
+                    statusBadge = '<span class="bg-gray-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">Past</span>';
+                    buttonHtml = hasAttended
+                        ? `<button onclick="downloadCertificate('${event._id}', \`${event.title}\`)" class="w-full gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">Download Certificate</button>`
+                        : `<a href="event.html?id=${event._id}" class="w-full bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 text-center block">View Details</a>`;
+                } else {
+                    statusBadge = '<span class="bg-accent text-white px-2 py-1 rounded-lg text-xs font-semibold">Registered</span>';
+                    buttonHtml = `<a href="event.html?id=${event._id}" class="w-full bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 text-center block">View Details</a>`;
+                }
             } else {
-                buttonHtml = `<div class="d-grid gap-2 mt-auto">
-                                 <a href="event.html?id=${event._id}" class="btn btn-outline-primary">View Details</a>
-                                 <button onclick="handleDirectRegistration('${event._id}', \`${event.title}\`, this)" class="btn btn-primary">Register</button>
-                               </div>`;
+                if (isPast) return '';
+                buttonHtml = `
+                    <div class="space-y-3">
+                        <a href="event.html?id=${event._id}" class="w-full border-2 border-primary text-primary px-6 py-3 rounded-xl font-semibold hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105 text-center block">
+                            View Details
+                        </a>
+                        <button onclick="startRegistration('${event._id}', \`${event.title}\`, '${event.competitionType}', this)" 
+                                class="w-full gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                            Register
+                        </button>
+                    </div>`;
+            }
+
+            let ratingHtml = '';
+            if (event.averageRating) {
+                ratingHtml = `
+                    <div class="absolute top-4 right-4 bg-secondary text-text px-2 py-1 rounded-lg text-sm font-semibold">
+                        ${event.averageRating.toFixed(1)} ★
+                    </div>
+                `;
             }
 
             return `
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="${BASE_URL}${event.posterUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" onerror="this.onerror=null;this.src='https://via.placeholder.com/400x200.png?text=EventSphere';">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">${event.title}</h5>
-                            <p class="card-text"><small class="text-muted">${new Date(event.date).toLocaleDateString()}</small></p>
+                <div class="animate-slide-up">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover relative ${cardClass}">
+                        ${ratingHtml}
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${BASE_URL}${event.posterUrl}" 
+                                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                 onerror="this.onerror=null;this.src='https://via.placeholder.com/400x200.png?text=EventSphere';">
+                            <div class="absolute top-4 left-4">
+                                ${statusBadge}
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 text-text">${event.title}</h3>
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="bi bi-calendar3 mr-2"></i>
+                                <span>${new Date(event.date).toLocaleDateString('en-US', { 
+                                    weekday: 'short', 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                })}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600 mb-4">
+                                <i class="bi bi-geo-alt mr-2"></i>
+                                <span>${event.venue || 'TBA'}</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm font-semibold">
+                                    ${event.type}
+                                </span>
+                            </div>
                             ${buttonHtml}
                         </div>
                     </div>
                 </div>`;
         }
-        
-        function renderPastEvents(page) {
-            const pastContainer = document.getElementById("past-events");
-            const start = (page - 1) * eventsPerPage;
-            const end = start + eventsPerPage;
-            const paginatedEvents = allPastEvents.slice(start, end);
-            let pastHtml = '';
-            paginatedEvents.forEach(event => {
-                pastHtml += renderEventCard(event, true);
-            });
-            pastContainer.innerHTML = pastHtml || emptyState('No past events found.');
-            document.querySelectorAll('#pagination-container .page-item').forEach(item => item.classList.remove('active'));
-            document.querySelector(`#pagination-container .page-item[data-page='${page}']`)?.classList.add('active');
-        }
 
-        function renderPagination() {
-            const paginationContainer = document.getElementById("pagination-container");
-            paginationContainer.innerHTML = '';
-            const pageCount = Math.ceil(allPastEvents.length / eventsPerPage);
-            if (pageCount <= 1) return;
-            for (let i = 1; i <= pageCount; i++) {
-                const li = document.createElement('li');
-                li.className = 'page-item';
-                li.dataset.page = i;
-                li.innerHTML = `<a class="page-link" href="#" onclick="event.preventDefault(); renderPastEvents(${i})">${i}</a>`;
-                paginationContainer.appendChild(li);
+        function startRegistration(eventId, eventTitle, competitionType, buttonElement) {
+            if (competitionType === 'Inter College') {
+                const modal = document.getElementById('collegeNameModal');
+                const confirmBtn = document.getElementById('confirmRegistrationBtn');
+                const collegeNameInput = document.getElementById('modalCollegeName');
+                collegeNameInput.value = '';
+                
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+                newConfirmBtn.addEventListener('click', () => {
+                    const collegeName = collegeNameInput.value;
+                    if (!collegeName.trim()) {
+                        alert('Please enter your college name.');
+                        return;
+                    }
+                    closeModal();
+                    handleDirectRegistration(eventId, eventTitle, buttonElement, collegeName);
+                });
+                modal.classList.remove('hidden');
+            } else {
+                handleDirectRegistration(eventId, eventTitle, buttonElement, 'N/A');
             }
         }
 
-        async function loadDashboard() {
+        function closeModal() {
+            document.getElementById('collegeNameModal').classList.add('hidden');
+        }
+
+        async function handleDirectRegistration(eventId, eventTitle, buttonElement, collegeName) {
+            if (!collegeName && !confirm(`Register for "${eventTitle}"?`)) return;
+            
+            const originalText = buttonElement.innerHTML;
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Registering...</span>
+                </div>
+            `;
+            
+            try {
+                const res = await fetch(`${BASE_URL}/api/events/${eventId}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify({ collegeName })
+                });
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error);
+                
+                // Show success message
+                buttonElement.innerHTML = `
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="bi bi-check-circle text-white"></i>
+                        <span>Registered!</span>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                loadAllData();
+                }, 1000);
+            } catch (error) {
+                alert(`Registration failed: ${error.message}`);
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = originalText;
+            }
+        }    
+
+          async function loadAllData() {
             const upcomingContainer = document.getElementById("upcoming-events");
             const registeredContainer = document.getElementById("registered-events");
             const pastContainer = document.getElementById("past-events");
-            
+            const recommendedContainer = document.getElementById("recommended-events");
+
+            const loadingSpinner = `
+                <div class="col-span-full flex justify-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+            `;
+
             upcomingContainer.innerHTML = loadingSpinner;
             registeredContainer.innerHTML = loadingSpinner;
             pastContainer.innerHTML = loadingSpinner;
+            recommendedContainer.innerHTML = loadingSpinner;
 
             try {
-                const res = await fetch(`${BASE_URL}/api/events`, { headers });
-                if (!res.ok) throw new Error("Failed to fetch event data.");
-                const allEvents = await res.json();
-                let upcomingHtml = '';
-                let registeredHtml = '';
-                allPastEvents = [];
+                const [eventsRes, recRes] = await Promise.all([
+                    fetch(`${BASE_URL}/api/events`, { headers }),
+                    fetch(`${BASE_URL}/api/events/recommended`, { headers })
+                ]);
+                if (!eventsRes.ok) throw new Error("Failed to fetch event data.");
+                const allEvents = await eventsRes.json();
+                const recommended = recRes.ok ? await recRes.json() : [];
+                
+                const now = new Date();
+                const fiveDaysAgo = new Date();
+                fiveDaysAgo.setDate(now.getDate() - 5);
+                fiveDaysAgo.setHours(0, 0, 0, 0);
 
-                allEvents.filter(e => e.status === 'approved').forEach(event => {
-                    const isRegistered = (event.attendees || []).some(a => a.userId?._id === userId);
+                const upcomingEvents = [];
+                const registeredEvents = [];
+                const pastEvents = [];
+
+                allEvents.filter(e => e.status === 'approved' || e.status === 'cancelled').forEach(event => {
                     const eventDateTime = new Date(event.date);
                     if (event.time) {
                         const [hours, minutes] = event.time.split(':');
                         eventDateTime.setHours(hours, minutes, 0, 0);
                     }
-                    const isPast = eventDateTime < new Date();
+
+                    const isRegistered = (event.attendees || []).some(a => a.userId?._id === userId);
+                    const isPast = eventDateTime < now;
+                    const isRecentPast = eventDateTime >= fiveDaysAgo && eventDateTime < now;
+
                     if (isRegistered) {
-                        registeredHtml += renderEventCard(event);
-                    } else if (isPast) {
-                        allPastEvents.push(event);
+                        if (isPast) {
+                            pastEvents.push(event);
                     } else {
-                        upcomingHtml += renderEventCard(event);
+                            registeredEvents.push(event);
+                        }
+                    } else if (!isPast) {
+                        upcomingEvents.push(event);
+                    } else if (isRecentPast) {
+                        pastEvents.push(event);
                     }
                 });
-                
-                upcomingContainer.innerHTML = upcomingHtml || emptyState('No new events to join at the moment.');
-                registeredContainer.innerHTML = registeredHtml || emptyState('You have not registered for any events yet.');
-                
-                allPastEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
-                renderPastEvents(1);
-                renderPagination();
+
+                // Update counts
+                document.getElementById('upcoming-count').textContent = upcomingEvents.length;
+                document.getElementById('registered-count').textContent = registeredEvents.length;
+                document.getElementById('certificates-count').textContent = pastEvents.filter(e => 
+                    (e.attendees || []).find(a => a.userId?._id === userId)?.isAttended
+                ).length;
+
+                // Render events
+                upcomingContainer.innerHTML = upcomingEvents.length > 0 
+                    ? upcomingEvents.map(event => renderEventCard(event)).join('')
+                    : `<div class="col-span-full text-center py-12">
+                         <i class="bi bi-calendar-x text-6xl text-gray-300 mb-4"></i>
+                         <h3 class="text-xl font-semibold text-gray-600 mb-2">No upcoming events</h3>
+                         <p class="text-gray-500">Check back later for new events!</p>
+                       </div>`;
+
+                registeredContainer.innerHTML = registeredEvents.length > 0 
+                    ? registeredEvents.map(event => renderEventCard(event)).join('')
+                    : `<div class="col-span-full text-center py-12">
+                         <i class="bi bi-check-circle text-6xl text-gray-300 mb-4"></i>
+                         <h3 class="text-xl font-semibold text-gray-600 mb-2">No registered events</h3>
+                         <p class="text-gray-500">Register for events to see them here!</p>
+                       </div>`;
+
+                pastContainer.innerHTML = pastEvents.length > 0 
+                    ? pastEvents.map(event => renderEventCard(event)).join('')
+                    : `<div class="col-span-full text-center py-12">
+                         <i class="bi bi-clock-history text-6xl text-gray-300 mb-4"></i>
+                         <h3 class="text-xl font-semibold text-gray-600 mb-2">No past events</h3>
+                         <p class="text-gray-500">Your event history will appear here!</p>
+                       </div>`;
+
+                // Render recommended
+                recommendedContainer.innerHTML = (recommended && recommended.length > 0)
+                    ? recommended.map(event => renderEventCard(event)).join('')
+                    : `<div class="col-span-full text-center py-12">
+                         <i class="bi bi-stars text-6xl text-yellow-300 mb-4"></i>
+                         <h3 class="text-xl font-semibold text-gray-600 mb-2">No recommendations yet</h3>
+                         <p class="text-gray-500">Register for events to get better recommendations.</p>
+                       </div>`;
+
             } catch (error) {
-                upcomingContainer.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+                const errorHtml = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="bi bi-exclamation-triangle text-6xl text-red-300 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-red-600 mb-2">Error loading events</h3>
+                        <p class="text-red-500">${error.message}</p>
+                    </div>
+                `;
+                upcomingContainer.innerHTML = errorHtml;
+                registeredContainer.innerHTML = errorHtml;
+                pastContainer.innerHTML = errorHtml;
+                recommendedContainer.innerHTML = errorHtml;
             }
         }
 
-        async function loadRecommendations() {
-            const recommendedContainer = document.getElementById("recommended-events");
-            recommendedContainer.innerHTML = `<div class="col-12 text-center"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div>`;
+        async function downloadCertificate(eventId, eventTitle) {
             try {
-                const res = await fetch(`${BASE_URL}/api/events/recommended`, { headers });
-                if (!res.ok) throw new Error('Could not load recommendations.');
-                const recommendedEvents = await res.json();
-                let recommendedHtml = '';
-                recommendedEvents.forEach(event => {
-                    recommendedHtml += renderEventCard(event);
-                });
-                recommendedContainer.innerHTML = recommendedHtml || emptyState('Attend events to get personalized recommendations!');
+                const res = await fetch(`${BASE_URL}/api/certificates/${eventId}`, { headers });
+                if (!res.ok) throw new Error('Certificate not available');
+                
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `certificate-${eventTitle.replace(/[^a-zA-Z0-9]/g, '-')}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
             } catch (error) {
-                recommendedContainer.innerHTML = '';
-                console.error("Could not load recommendations:", error.message);
+                alert('Failed to download certificate: ' + error.message);
             }
         }
-        
-        function loadAllData() {
-            loadDashboard();
-            loadRecommendations();
-        }
 
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+        
         document.addEventListener("DOMContentLoaded", loadAllData);
     </script>
     <script src="navbar.js"></script>
+    <div id="footer-container"></div>
+    <script src="footer.js"></script>
 </body>
 </html>

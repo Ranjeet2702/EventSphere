@@ -16,7 +16,7 @@ const router = express.Router();
 // --- GOOGLE OAUTH ROUTES ---
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/google/callback', passport.authenticate('google', { session: false, failureRedirect: '/login.html' }), (req, res) => {
+router.get('/google/callback', passport.authenticate('google', { session: false, failureRedirect: 'http://127.0.0.1:5500/login.html' }), (req, res) => {
     const token = jwt.sign({ id: req.user._id, role: req.user.role }, process.env.JWT_SECRET, { expiresIn: '8h' });
     const script = `
         <script>
@@ -25,7 +25,8 @@ router.get('/google/callback', passport.authenticate('google', { session: false,
             window.localStorage.setItem('role', '${req.user.role}');
             window.localStorage.setItem('name', '${req.user.name}');
             window.localStorage.setItem('email', '${req.user.email}');
-            window.location.href = '/frontend/student-dashboard.html';
+            // This is the crucial fix: Use the full, absolute URL for the redirect
+            window.location.href = 'http://127.0.0.1:5500/student-dashboard.html';
         </script>
     `;
     res.send(script);
@@ -70,6 +71,29 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ error: "A server error occurred during login." });
+  }
+});
+
+// Change Password (authenticated)
+router.post('/change-password', verifyToken, async (req, res) => {
+  const { currentPassword, newPassword } = req.body || {};
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Current and new password are required.' });
+  }
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found.' });
+    if (!user.password) {
+      return res.status(400).json({ error: 'Password change is not available for Google Sign-In accounts.' });
+    }
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) return res.status(401).json({ error: 'Current password is incorrect.' });
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.json({ message: 'Password changed successfully.' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ error: 'Error changing password.' });
   }
 });
 

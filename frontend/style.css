@@ -13,3 +13,178 @@ body {
   transform: translateY(-5px);
   box-shadow: 0 4px 20px rgba(0,0,0,.15);
 }
+
+/* Notification System Styles */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 400px;
+}
+
+.toast-notification {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 10px;
+  border-left: 4px solid #007bff;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.toast-success {
+  border-left-color: #28a745;
+}
+
+.toast-warning {
+  border-left-color: #ffc107;
+}
+
+.toast-error {
+  border-left-color: #dc3545;
+}
+
+.toast-info {
+  border-left-color: #17a2b8;
+}
+
+.toast-header {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toast-body {
+  padding: 10px 15px;
+  color: #333;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #999;
+}
+
+.btn-close:hover {
+  color: #333;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Notification Dropdown Styles */
+.notification-dropdown {
+  padding: 0;
+}
+
+.notification-header {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.notification-header h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
+
+.notification-item.unread {
+  background-color: #e3f2fd;
+}
+
+.notification-item.unread:hover {
+  background-color: #bbdefb;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.notification-time {
+  font-size: 11px;
+  color: #999;
+}
+
+.notification-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #007bff;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.no-notifications {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.notification-footer {
+  padding: 10px 15px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.notification-footer a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.notification-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Bootstrap Icons */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css");

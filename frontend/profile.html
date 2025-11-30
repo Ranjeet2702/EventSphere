@@ -2,148 +2,722 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Profile - EventSphere</title>
+    <title>Profile - EventSphere</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#FACC15',
+                        accent: '#22C55E',
+                        background: '#F9FAFB',
+                        text: '#111827'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'scale-up': 'scaleUp 0.2s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        scaleUp: {
+                            '0%': { transform: 'scale(1)' },
+                            '100%': { transform: 'scale(1.05)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .profile-pic { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #eee; }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
     </style>
 </head>
-<body>
-    <header id="navbar-container"></header>
+<body class="bg-background text-text min-h-screen">
+    <!-- Sticky Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-gray-200 transition-all duration-300" id="navbar-container">
+        <!-- Navbar content will be injected here -->
+    </nav>
 
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 text-center">
-                <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic mb-3" id="profile-image-display">
-                <h2 id="profile-name">Loading...</h2>
-                <p class="text-muted" id="profile-email">...</p>
+    <!-- Profile Section -->
+    <section class="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Profile Header -->
+            <div class="animate-fade-in mb-8">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-2 gradient-text">Profile</h1>
+                <p class="text-gray-600 text-lg">Manage your account settings and preferences</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Profile Card -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Personal Information -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-text">Personal Information</h2>
+                            <button onclick="toggleEditMode()" 
+                                    class="text-primary hover:text-primary/80 transition-colors duration-300">
+                                <i class="bi bi-pencil text-xl"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="profile-form" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                                    <input type="text" 
+                                           id="name" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                                           value="${localStorage.getItem('name') || ''}"
+                                           disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                                    <input type="email" 
+                                           id="email" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 bg-gray-50"
+                                           value="${localStorage.getItem('email') || ''}"
+                                           disabled>
             </div>
         </div>
         
-        <div class="row justify-content-center mt-4">
-            <div class="col-md-6">
-                <h4>Update Profile Details</h4>
-                <form id="profile-update-form">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="name">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Phone</label>
+                                    <input type="tel" 
+                                           id="phone" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                                           disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
+                                    <input type="text" 
+                                           id="role" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 bg-gray-50"
+                                           value=""
+                                           disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Member Since</label>
+                                    <input type="text" 
+                                           id="memberSince" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 bg-gray-50"
+                                           value=""
+                                           disabled>
+                                </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email">
+                            
+                            <div class="flex space-x-4 pt-4">
+                                <button type="submit" 
+                                        id="save-btn"
+                                        class="gradient-bg text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 hidden">
+                                    Save Changes
+                                </button>
+                                <button type="button" 
+                                        id="cancel-btn"
+                                        onclick="cancelEdit()"
+                                        class="border-2 border-gray-300 text-gray-700 px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 hidden">
+                                    Cancel
+                                </button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Details</button>
                 </form>
-                
-                <hr class="my-4">
+                    </div>
 
-                <h4>Update Profile Picture</h4>
-                <form id="profile-image-form">
-                    <div class="mb-3">
-                        <label for="profileImage" class="form-label">Upload New Image</label>
-                        <input class="form-control" type="file" id="profileImage" accept="image/*">
+                    <!-- Security Settings -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                        <h2 class="text-2xl font-bold text-text mb-6">Security Settings</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="border-b border-gray-200 pb-6">
+                                <h3 class="text-lg font-semibold text-text mb-2">Change Password</h3>
+                                <p class="text-gray-600 mb-4">Update your password to keep your account secure</p>
+                                <button onclick="showChangePasswordModal()" 
+                                        class="border-2 border-primary text-primary px-6 py-2 rounded-xl font-semibold hover:bg-primary hover:text-white transition-all duration-300">
+                                    Change Password
+                                </button>
+                            </div>
+                            
+                            <div class="border-b border-gray-200 pb-6">
+                                <h3 class="text-lg font-semibold text-text mb-2">Two-Factor Authentication</h3>
+                                <p class="text-gray-600 mb-4">Add an extra layer of security to your account</p>
+                                <div class="flex items-center space-x-4">
+                                    <button class="bg-gray-300 text-gray-600 px-6 py-2 rounded-xl font-semibold cursor-not-allowed">
+                                        Coming Soon
+                                    </button>
+                                    <span class="text-sm text-gray-500">Feature in development</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-lg font-semibold text-text mb-2">Account Deletion</h3>
+                                <p class="text-gray-600 mb-4">Permanently delete your account and all associated data</p>
+                                <button onclick="showDeleteAccountModal()" 
+                                        class="border-2 border-red-500 text-red-500 px-6 py-2 rounded-xl font-semibold hover:bg-red-500 hover:text-white transition-all duration-300">
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-secondary">Upload Image</button>
-                </form>
-                <p id="profile-message" class="mt-3" style="display: none;"></p>
+
+                    <!-- Notification Preferences -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                        <h2 class="text-2xl font-bold text-text mb-6">Notification Preferences</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
+                                <div>
+                                    <h3 class="font-semibold text-text">Event Reminders</h3>
+                                    <p class="text-sm text-gray-600">Get notified before events you're registered for</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
+                                <div>
+                                    <h3 class="font-semibold text-text">New Event Notifications</h3>
+                                    <p class="text-sm text-gray-600">Get notified about new events in your categories</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
+                                <div>
+                                    <h3 class="font-semibold text-text">Email Notifications</h3>
+                                    <p class="text-sm text-gray-600">Receive notifications via email</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Profile Picture -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover text-center">
+                        <div class="w-24 h-24 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                            <img id="profile-avatar-img" class="w-24 h-24 object-cover hidden" alt="Profile" />
+                            <span class="text-white font-bold text-2xl" id="sidebar-initial" data-profile-initial>U</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-text mb-2" id="sidebar-name">User</h3>
+                        <p class="text-gray-500 mb-4" id="sidebar-role">Student</p>
+                        <button id="changePhotoBtn" class="text-primary hover:text-primary/80 transition-colors duration-300 text-sm font-medium">
+                            <i class="bi bi-camera mr-1"></i>
+                            Change Photo
+                        </button>
+                        <input id="profileImageInput" type="file" accept="image/*" class="hidden" />
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                        <h3 class="text-lg font-bold text-text mb-4">Your Activity</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="bi bi-calendar-event text-blue-600"></i>
+                                    </div>
+                                    <span class="text-gray-700">Events Attended</span>
+                                </div>
+                                <span class="font-semibold text-text" id="events-attended">0</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="bi bi-check-circle text-green-600"></i>
+                                    </div>
+                                    <span class="text-gray-700">Events Registered</span>
+                                </div>
+                                <span class="font-semibold text-text" id="events-registered">0</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                        <i class="bi bi-star text-yellow-600"></i>
+                                    </div>
+                                    <span class="text-gray-700">Reviews Given</span>
+                                </div>
+                                <span class="font-semibold text-text" id="reviews-given">0</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <i class="bi bi-trophy text-purple-600"></i>
+                                    </div>
+                                    <span class="text-gray-700">Certificates</span>
+                    </div>
+                                <span class="font-semibold text-text" id="certificates-earned">0</span>
             </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                        <h3 class="text-lg font-bold text-text mb-4">Quick Actions</h3>
+                        <div class="space-y-3">
+                            <a href="student-dashboard.html" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                                <i class="bi bi-house text-primary"></i>
+                                <span class="text-gray-700">Go to Dashboard</span>
+                            </a>
+                            <a href="index.html" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                                <i class="bi bi-calendar-event text-primary"></i>
+                                <span class="text-gray-700">Browse Events</span>
+                            </a>
+                            <button onclick="logout()" class="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-red-50 transition-colors duration-300 text-left">
+                                <i class="bi bi-box-arrow-right text-red-500"></i>
+                                <span class="text-red-500">Sign Out</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Change Password Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="changePasswordModal">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-text">Change Password</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-600 transition-colors duration-300" onclick="hideChangePasswordModal()">
+                    <i class="bi bi-x text-2xl"></i>
+                </button>
+            </div>
+            
+            <form id="change-password-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+                    <input type="password" 
+                           id="currentPassword" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                           required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+                    <input type="password" 
+                           id="newPassword" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                           required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
+                    <input type="password" 
+                           id="confirmPassword" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+                           required>
+                </div>
+                
+                <div class="flex space-x-4 pt-4">
+                    <button type="button" 
+                            onclick="hideChangePasswordModal()"
+                            class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                        Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="deleteAccountModal">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <i class="bi bi-exclamation-triangle text-6xl text-red-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-text mb-2">Delete Account</h3>
+                <p class="text-gray-600">This action cannot be undone. All your data will be permanently deleted.</p>
+            </div>
+            
+            <form id="delete-account-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Type "DELETE" to confirm</label>
+                    <input type="text" 
+                           id="deleteConfirmation" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                           placeholder="Type DELETE to confirm"
+                           required>
+                </div>
+                
+                <div class="flex space-x-4 pt-4">
+                    <button type="button" 
+                            onclick="hideDeleteAccountModal()"
+                            class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 bg-red-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-600 transition-all duration-300">
+                        Delete Account
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script src="config.js"></script>
+    <script src="notificationSystem.js"></script>
     <script>
-        const token = localStorage.getItem('token');
-        if (!token) window.location.href = "login.html";
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        
+        if (!token || !userId) {
+            window.location.href = "login.html";
+        }
 
         const headers = { 'Authorization': `Bearer ${token}` };
-        const headersJSON = { 'Content-Type': 'application/json', ...headers };
+        const jsonHeaders = { 'Content-Type': 'application/json', ...headers };
 
-        const nameInput = document.getElementById('name');
-        const emailInput = document.getElementById('email');
-        const profileName = document.getElementById('profile-name');
-        const profileEmail = document.getElementById('profile-email');
-        const profileImageDisplay = document.getElementById('profile-image-display');
-        const msg = document.getElementById('profile-message');
-
-        async function loadProfile() {
+        // Load current user's profile and bind to fields
+        async function loadUserProfile() {
             try {
                 const res = await fetch(`${BASE_URL}/api/users/profile`, { headers });
-                if (!res.ok) throw new Error('Failed to load profile');
+                if (!res.ok) throw new Error('Failed to fetch profile');
                 const user = await res.json();
-                
-                nameInput.value = user.name;
-                emailInput.value = user.email;
-                profileName.innerText = user.name;
-                profileEmail.innerText = user.email;
+                // Map to inputs
+                const nameInput = document.getElementById('name');
+                const emailInput = document.getElementById('email');
+                const phoneInput = document.getElementById('phone');
+                const roleInput = document.getElementById('role');
+                const memberSinceInput = document.getElementById('memberSince');
+                if (nameInput) nameInput.value = user.name || '';
+                if (emailInput) emailInput.value = user.email || '';
+                if (phoneInput) phoneInput.value = user.phone || '';
+                if (roleInput) roleInput.value = (user.role || 'student').charAt(0).toUpperCase() + (user.role || 'student').slice(1);
+                if (memberSinceInput && user.createdAt) memberSinceInput.value = new Date(user.createdAt).toLocaleDateString();
+                // Keep localStorage in sync
+                if (user.name) localStorage.setItem('name', user.name);
+                if (user.email) localStorage.setItem('email', user.email);
+                // Update sidebar initials and labels
+                const initial = (user.name || 'U').charAt(0).toUpperCase();
+                const roleLabel = (user.role || 'student').charAt(0).toUpperCase() + (user.role || 'student').slice(1);
+                const initialEl = document.getElementById('sidebar-initial');
+                const nameEl = document.getElementById('sidebar-name');
+                const roleEl = document.getElementById('sidebar-role');
+                if (initialEl) initialEl.textContent = initial;
+                if (nameEl) nameEl.textContent = user.name || 'User';
+                if (roleEl) roleEl.textContent = roleLabel;
+
+                // Show profile image if present
                 if (user.profileImageUrl) {
-                    profileImageDisplay.src = `${BASE_URL}${user.profileImageUrl}`;
+                    const img = document.getElementById('profile-avatar-img');
+                    const initialSpan = document.getElementById('sidebar-initial');
+                    if (img) {
+                        img.src = `${BASE_URL}${user.profileImageUrl}`;
+                        img.classList.remove('hidden');
+                        if (initialSpan) initialSpan.classList.add('hidden');
+                    }
                 }
-            } catch (error) {
-                msg.className = 'mt-3 text-danger';
-                msg.innerText = error.message;
-                msg.style.display = 'block';
+            } catch (err) {
+                console.error('Profile load error:', err);
             }
         }
 
-        document.getElementById('profile-update-form').addEventListener('submit', async (e) => {
+        // Load user stats
+        async function loadUserStats() {
+            try {
+                const res = await fetch(`${BASE_URL}/api/events`, { headers });
+                if (!res.ok) throw new Error('Failed to fetch events');
+                const events = await res.json();
+                
+                const now = new Date();
+                const attendedEvents = events.filter(event => {
+                    const eventDateTime = new Date(event.date);
+                    if (event.time) {
+                        const [hours, minutes] = event.time.split(':');
+                        eventDateTime.setHours(hours, minutes, 0, 0);
+                    }
+                    return eventDateTime < now && (event.attendees || []).some(a => a.userId?._id === userId && a.isAttended);
+                });
+                
+                const registeredEvents = events.filter(event => 
+                    (event.attendees || []).some(a => a.userId?._id === userId)
+                );
+                
+                const reviewsGiven = events.reduce((total, event) => 
+                    total + (event.feedback || []).filter(f => f.userId?._id === userId).length, 0
+                );
+                
+                const certificatesEarned = attendedEvents.length;
+                
+                document.getElementById('events-attended').textContent = attendedEvents.length;
+                document.getElementById('events-registered').textContent = registeredEvents.length;
+                document.getElementById('reviews-given').textContent = reviewsGiven;
+                document.getElementById('certificates-earned').textContent = certificatesEarned;
+                
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+
+        // Edit mode functions
+        function toggleEditMode() {
+            const nameInput = document.getElementById('name');
+            const saveBtn = document.getElementById('save-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            
+            nameInput.disabled = !nameInput.disabled;
+            saveBtn.classList.toggle('hidden');
+            cancelBtn.classList.toggle('hidden');
+            
+            if (!nameInput.disabled) {
+                nameInput.focus();
+            }
+        }
+
+        function cancelEdit() {
+            const nameInput = document.getElementById('name');
+            const saveBtn = document.getElementById('save-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            
+            nameInput.value = localStorage.getItem('name') || '';
+            nameInput.disabled = true;
+            saveBtn.classList.add('hidden');
+            cancelBtn.classList.add('hidden');
+        }
+
+        // Modal functions
+        function showChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.remove('hidden');
+        }
+
+        function hideChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.add('hidden');
+            document.getElementById('change-password-form').reset();
+        }
+
+        function showDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').classList.remove('hidden');
+        }
+
+        function hideDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').classList.add('hidden');
+            document.getElementById('delete-account-form').reset();
+        }
+
+        // Form submissions
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            msg.style.display = 'none';
+            
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const saveBtn = document.getElementById('save-btn');
+            const originalText = saveBtn.innerHTML;
+            
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = `
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Saving...</span>
+                </div>
+            `;
+            
             try {
                 const res = await fetch(`${BASE_URL}/api/users/profile`, {
                     method: 'PATCH',
-                    headers: headersJSON,
-                    body: JSON.stringify({ name: nameInput.value, email: emailInput.value })
+                    headers: jsonHeaders,
+                    body: JSON.stringify({ name, phone })
                 });
-                const result = await res.json();
-                if (!res.ok) throw new Error(result.error);
                 
-                msg.className = 'mt-3 text-success';
-                msg.innerText = 'Profile details updated!';
-                msg.style.display = 'block';
-                loadProfile(); 
+                if (!res.ok) throw new Error((await res.json()).error);
+                
+                // Sync updated details
+                localStorage.setItem('name', name);
+                await loadUserProfile();
+                toggleEditMode();
+                
+                // Show success message
+                saveBtn.innerHTML = `
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="bi bi-check-circle text-white"></i>
+                        <span>Saved!</span>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                }, 1000);
+                
             } catch (error) {
-                msg.className = 'mt-3 text-danger';
-                msg.innerText = error.message;
-                msg.style.display = 'block';
+                alert('Failed to update profile: ' + error.message);
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
             }
         });
-        
-        document.getElementById('profile-image-form').addEventListener('submit', async (e) => {
+
+        document.getElementById('change-password-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            msg.style.display = 'none';
-            const fileInput = document.getElementById('profileImage');
-            if (fileInput.files.length === 0) {
-                msg.className = 'mt-3 text-danger';
-                msg.innerText = 'Please select an image file.';
-                msg.style.display = 'block';
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
                 return;
             }
-            const formData = new FormData();
-            formData.append('profileImage', fileInput.files[0]);
-
+            
+            if (newPassword.length < 6) {
+                alert('New password must be at least 6 characters long!');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Changing...</span>
+                </div>
+            `;
+            
             try {
-                const res = await fetch(`${BASE_URL}/api/users/profile/image`, {
+                const res = await fetch(`${BASE_URL}/api/auth/change-password`, {
                     method: 'POST',
-                    headers,
-                    body: formData
+                    headers: jsonHeaders,
+                    body: JSON.stringify({ currentPassword, newPassword })
                 });
-                const result = await res.json();
-                if (!res.ok) throw new Error(result.error);
-                msg.className = 'mt-3 text-success';
-                msg.innerText = 'Profile image updated!';
-                msg.style.display = 'block';
-                profileImageDisplay.src = `${BASE_URL}${result.user.profileImageUrl}`;
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(data.error || 'Failed to change password');
+                hideChangePasswordModal();
+                alert('Password changed successfully!');
             } catch (error) {
-                msg.className = 'mt-3 text-danger';
-                msg.innerText = error.message;
-                msg.style.display = 'block';
+                alert('Failed to change password: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
         });
 
-        document.addEventListener('DOMContentLoaded', loadProfile);
+        document.getElementById('delete-account-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const confirmation = document.getElementById('deleteConfirmation').value;
+            
+            if (confirmation !== 'DELETE') {
+                alert('Please type "DELETE" to confirm account deletion.');
+                return;
+            }
+            
+            if (!confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Deleting...</span>
+                </div>
+            `;
+            
+            try {
+                const res = await fetch(`${BASE_URL}/api/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: jsonHeaders
+                });
+                
+                if (!res.ok) throw new Error((await res.json()).error);
+                
+                localStorage.clear();
+                window.location.href = 'login.html';
+                
+            } catch (error) {
+                alert('Failed to delete account: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+            loadUserStats();
+            // Change photo handler
+            const changeBtn = document.getElementById('changePhotoBtn');
+            const fileInput = document.getElementById('profileImageInput');
+            if (changeBtn && fileInput) {
+                changeBtn.addEventListener('click', () => fileInput.click());
+                fileInput.addEventListener('change', async () => {
+                    if (!fileInput.files || fileInput.files.length === 0) return;
+                    const formData = new FormData();
+                    formData.append('profileImage', fileInput.files[0]);
+                    try {
+                        const res = await fetch(`${BASE_URL}/api/users/profile/image`, { method: 'POST', headers, body: formData });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.error || 'Upload failed');
+                        await loadUserProfile();
+                    } catch (e) {
+                        alert('Failed to upload image: ' + e.message);
+                    } finally {
+                        fileInput.value = '';
+                    }
+                });
+            }
+        });
     </script>
     <script src="navbar.js"></script>
+    <div id="footer-container"></div>
+    <script src="footer.js"></script>
 </body>
 </html>

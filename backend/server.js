@@ -8,31 +8,26 @@ const db = require('./db');
 
 const app = express();
 
-// --- START OF FIX: SIMPLIFIED AND CORRECTED CORS CONFIGURATION ---
+
+
+// CORS Configuration
+const allowedOrigins = [
+  'https://event-projrct-frontend.onrender.com',
+  'http://127.0.0.1:5500',
+  'http://localhost:5500',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
 app.use(cors({
-  origin: [
-    'https://event-projrct-frontend.onrender.com', // Your deployed frontend
-    'http://127.0.0.1:5500',                      // Your VS Code Live Server
-    'http://localhost:5500'                          // Your VS Code Live Server
-  ],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
-// CORS configuration
-//const allowedOrigins = [
-  //'https://event-projrct-frontend.onrender.com',
-  //'http://127.0.0.1:5500',
-  //'http://localhost:5500'
-//];
-//app.use(cors({
-  //origin: function (origin, callback) {
-    //if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      //callback(null, true);
-    //} else {
-      //callback(new Error('Not allowed by CORS'));
-    //}
-  //},
-  //credentials: true
-//}));
 
 // Middleware
 app.use(express.json());
@@ -42,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '../frontend')));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Import routes
@@ -52,6 +47,7 @@ const certificateRoutes = require('./routes/certificates');
 const userRoutes = require('./routes/users');
 const analyticsRoutes = require('./routes/analytics');
 const feedbackRoutes = require('./routes/feedback');
+const notificationRoutes = require('./routes/notifications');
 
 // Use API routes
 app.use('/api/auth', authRoutes); // This will now include the /google route
@@ -60,8 +56,37 @@ app.use('/api/certificates', certificateRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/notifications', notificationRoutes);
+
+
+
+// For any other request, serve the main frontend page
+app.use(express.static(path.join(__dirname, '../frontend')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
+});
+
+// Initialize scheduler for notifications
+const Scheduler = require('./utils/scheduler');
+const scheduler = new Scheduler();
+
+// Start the scheduler when server starts
+scheduler.start();
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\n🛑 Shutting down gracefully...');
+  scheduler.stop();
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  console.log('\n🛑 Shutting down gracefully...');
+  scheduler.stop();
+  process.exit(0);
 });
